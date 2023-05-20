@@ -2,8 +2,8 @@
 
 [Another Old VCR Artifact of Love!](http://oldvcr.blogspot.com/)
 
-Copyright (C)2023 Cameron Kaiser.
-All rights reserved.
+Copyright (C)2023 Cameron Kaiser.  
+All rights reserved.  
 Provided under the Floodgap Free Software License.
 
 ## What it does
