@@ -24,13 +24,16 @@
 #endif
 
 int port, spini = 0;
-struct termios tty, tty_saved;
+struct termios tty, tty_saved, tty_saved_in, tty_saved_out, tty_saved_err;
 struct sigaction hothotsig;
 unsigned char hex[16] = "0123456789ABCDEF";
 
 void cleanup() {
 	(void)tcsetattr(port, TCSAFLUSH, &tty_saved);
 	(void)close(port);
+	(void)tcsetattr(STDIN_FILENO, TCSANOW, &tty_saved_in);
+	(void)tcsetattr(STDOUT_FILENO, TCSANOW, &tty_saved_out);
+	(void)tcsetattr(STDERR_FILENO, TCSANOW, &tty_saved_err);
 }
 
 void
@@ -172,6 +175,14 @@ int main(int argc, char **argv)
 	struct timeval tv;
 	unsigned char c, bin[24], bout[256];
 	unsigned short sum;
+
+	/* it's not enough to just restore the serial port settings */
+	if (tcgetattr(STDIN_FILENO, &tty_saved_in) ||
+			tcgetattr(STDOUT_FILENO, &tty_saved_out) ||
+			tcgetattr(STDERR_FILENO, &tty_saved_err)) {
+		perror("tcgetattr (tty)");
+		return 1;
+	}
 
 	if (argc < 3) {
 		fprintf(stderr, USAGE, argv[0]);
